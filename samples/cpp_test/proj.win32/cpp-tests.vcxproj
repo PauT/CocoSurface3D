@@ -40,13 +40,13 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\cocos\2d\cocos2dx.props" />
-    <Import Project="..\..\..\cocos\2d\cocos2d_headers.props" />
+    <Import Project="..\..\..\cocos2dx\cocos\2d\cocos2dx.props" />
+    <Import Project="..\..\..\cocos2dx\cocos\2d\cocos2d_headers.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\cocos\2d\cocos2dx.props" />
-    <Import Project="..\..\..\cocos\2d\cocos2d_headers.props" />
+    <Import Project="..\..\..\cocos2dx\cocos\2d\cocos2dx.props" />
+    <Import Project="..\..\..\cocos2dx\cocos\2d\cocos2d_headers.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -570,7 +570,7 @@
     <ClInclude Include="..\Classes\MutiTouchTest\MutiTouchTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\cocos\2d\libcocos2d.vcxproj">
+    <ProjectReference Include="..\..\..\cocos2dx\cocos\2d\libcocos2d.vcxproj">
       <Project>{98a51ba8-fc3a-415b-ac8f-8c7bd464e93e}</Project>
     </ProjectReference>
   </ItemGroup>
