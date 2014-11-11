@@ -1,5 +1,8 @@
 /****************************************************************************
-Copyright (c) 2014 PauT
+Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2013-2014 Chukong Technologies Inc.
+
+http://www.cocos2d-x.org
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,16 +23,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
+#ifndef __PLATFORM_CSPLATFORMDEFINE_H__
+#define __PLATFORM_CSPLATFORMDEFINE_H__
 
+#include "platform/CCPlatformConfig.h"
+#include "platform/CCPlatformDefine.h"
 
-
-
-
+#if CC_TARGET_PLATFORM == CC_PLATFORM_MAC
+#include "mac/CSPlatformDefine-mac.h"
+#elif CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "ios/CSPlatformDefine-ios.h"
+#elif CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+#include "android/CSPlatformDefine-android.h"
+#elif CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+#include "win32/CSPlatformDefine-win32.h"
+#elif CC_TARGET_PLATFORM == CC_PLATFORM_WP8 || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT
+#include "winrt/CSPlatformDefine-winrt.h"
+#elif CC_TARGET_PLATFORM == CC_PLATFORM_LINUX
+#include "linux/CSPlatformDefine-linux.h"
 #endif
+
+#endif /* __PLATFORM_CCPLATFORMDEFINE_H__*/

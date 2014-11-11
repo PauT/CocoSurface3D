@@ -20,16 +20,48 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
+#ifndef __CSGLVIEW_H__
+#define __CSGLVIEW_H__
+
+#include "CSPlatformMacros.h"
+#include "base/ccTypes.h"
+//#include "base/CCEventTouch.h"
+#include "platform/CCGLView.h"
+#include "cocos2d.h"
+
+#include <vector>
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include <windows.h>
+#endif /* (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) */
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+typedef void* id;
+#endif /* (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) */
 
 
 
 
 
-#endif
+NS_CS_BEGIN
+
+/**
+ * @addtogroup platform
+ * @{
+ */
+class CS_DLL CSGLView : public cocos2d::GLView
+{
+public:
+    /**
+     * @js ctor
+     */
+	CSGLView() {};
+    
+};
+
+// end of platform group
+/// @}
+
+NS_CS_END
+
+#endif /* __CCGLVIEW_H__ */

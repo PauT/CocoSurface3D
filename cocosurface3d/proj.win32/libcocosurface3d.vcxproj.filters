@@ -2,8 +2,32 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\cocosurface3d.h" />
+    <ClInclude Include="..\test.h" />
+    <ClInclude Include="..\other.h" />
+    <ClInclude Include="..\platform\CSGLView.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\CSPlatformMacros.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\win32\CSPlatformDefine-win32.h">
+      <Filter>platform\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cocosurface3d.cpp" />
+    <ClCompile Include="..\test.cpp" />
+    <ClCompile Include="..\other.cpp" />
+    <ClCompile Include="..\platform\CSGLView.cpp">
+      <Filter>platform</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="platform">
+      <UniqueIdentifier>{53f7e3e3-f0e9-4db4-8c52-967e0503690d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platform\win32">
+      <UniqueIdentifier>{2744f384-80dd-4368-9d35-38c8f7888b8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

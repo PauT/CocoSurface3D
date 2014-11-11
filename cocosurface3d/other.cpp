@@ -19,17 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
+#include "other.h"
+#include "cocosurface3d.h"
+#include "test.h"
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
-
-
+other::other()
+{
+	nameT2::test ttt;
+}
 
 
-
-#endif

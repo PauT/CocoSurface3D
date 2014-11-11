@@ -1,5 +1,8 @@
 /****************************************************************************
-Copyright (c) 2014 PauT
+Copyright (c) 2010-2012 cocos2d-x.org
+Copyright (c) 2013-2014 Chukong Technologies Inc.
+
+http://www.cocos2d-x.org
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,17 +22,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
+#ifndef __CSPLATFORMDEFINE_H__
+#define __CSPLATFORMDEFINE_H__
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
+#include "platform/CCPlatformConfig.h"
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 
-
-
-
-
+#if defined(CS_STATIC)
+    #define CS_DLL
+#else
+#if defined(_USR_CS_DLL)
+    #define CS_DLL     __declspec(dllexport)
+#else         /* use a DLL library */
+    #define CS_DLL     __declspec(dllimport)
 #endif
+#endif
+
+#endif //s CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+
+#endif /* __CCPLATFORMDEFINE_H__*/

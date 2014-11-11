@@ -19,17 +19,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
+#ifndef __CS_PLATFORM_MACROS_H__
+#define __CS_PLATFORM_MACROS_H__
+#include "platform/CCPlatformMacros.h"
+#include "CSPlatformDefine.h"
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
+// generic macros
+
+// namespace cocosuface3d {}
+#ifdef __cplusplus
+    #define NS_CS_BEGIN                     namespace cocosurface3d {
+    #define NS_CS_END                       }
+    #define USING_NS_CS                     using namespace cocosurface3d
+	#define NS_CS                           ::cocosurface3d
+#else
+    #define NS_CS_BEGIN 
+    #define NS_CS_END 
+    #define USING_NS_CS
+    #define NS_CS
+#endif 
 
 
-
-
-
-#endif
+#endif // __CC_PLATFORM_MACROS_H__
