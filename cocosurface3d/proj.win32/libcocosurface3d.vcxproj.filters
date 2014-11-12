@@ -2,24 +2,26 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\cocosurface3d.h" />
-    <ClInclude Include="..\test.h" />
-    <ClInclude Include="..\other.h" />
-    <ClInclude Include="..\platform\CSGLView.h">
-      <Filter>platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\platform\CSPlatformMacros.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\platform\win32\CSPlatformDefine-win32.h">
       <Filter>platform\win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\CSScene.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\CSLayer.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cocosurface3d.cpp" />
-    <ClCompile Include="..\test.cpp" />
-    <ClCompile Include="..\other.cpp" />
-    <ClCompile Include="..\platform\CSGLView.cpp">
-      <Filter>platform</Filter>
+    <ClCompile Include="..\base\CSScene.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\CSLayer.cpp">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -28,6 +30,9 @@
     </Filter>
     <Filter Include="platform\win32">
       <UniqueIdentifier>{2744f384-80dd-4368-9d35-38c8f7888b8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base">
+      <UniqueIdentifier>{257dc37f-06d2-4a86-a8fd-ad6b443b3cd0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

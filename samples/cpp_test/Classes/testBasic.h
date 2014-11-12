@@ -2,6 +2,7 @@
 #define _TEST_BASIC_H_
 
 #include "cocos2d.h"
+#include "cocosurface3d.h"
 #include "audio/include/SimpleAudioEngine.h"
 #include "VisibleRect.h"
 

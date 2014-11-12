@@ -2,7 +2,6 @@
 #define _CONTROLLER_H_
 
 #include "cocos2d.h"
-#include "cocosurface3d.h"
 
 USING_NS_CC;
 

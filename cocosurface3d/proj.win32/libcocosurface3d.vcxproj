@@ -36,11 +36,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\cocos2dx\cocos\2d\cocos2dx.props" />
     <Import Project="..\..\cocos2dx\cocos\2d\cocos2d_headers.props" />
+    <Import Project="cocosurface3d_headers.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\cocos2dx\cocos\2d\cocos2dx.props" />
     <Import Project="..\..\cocos2dx\cocos\2d\cocos2d_headers.props" />
+    <Import Project="cocosurface3d_headers.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -55,7 +57,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Classes;$(EngineRoot);$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)cocos\network;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)external\curl\include\win32;$(EngineRoot)external\websockets\win32\include;$(EngineRoot)extensions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Classes;$(EngineRoot);$(EngineRoot)cocos;$(EngineRoot)cocos\editor-support;$(EngineRoot)cocos\audio\include;$(EngineRoot)cocos\network;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)external\curl\include\win32;$(EngineRoot)external\websockets\win32\include;$(EngineRoot)extensions;$(CocosSuface3DRoot);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;COCOS2DXWIN32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -101,18 +103,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\base\CSLayer.h" />
+    <ClInclude Include="..\base\CSScene.h" />
     <ClInclude Include="..\cocosurface3d.h" />
-    <ClInclude Include="..\other.h" />
-    <ClInclude Include="..\platform\CSGLView.h" />
     <ClInclude Include="..\platform\CSPlatformMacros.h" />
     <ClInclude Include="..\platform\win32\CSPlatformDefine-win32.h" />
-    <ClInclude Include="..\test.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\base\CSLayer.cpp" />
+    <ClCompile Include="..\base\CSScene.cpp" />
     <ClCompile Include="..\cocosurface3d.cpp" />
-    <ClCompile Include="..\other.cpp" />
-    <ClCompile Include="..\platform\CSGLView.cpp" />
-    <ClCompile Include="..\test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\cocos2dx\cocos\2d\libcocos2d.vcxproj">

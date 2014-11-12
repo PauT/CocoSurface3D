@@ -20,17 +20,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
+#include <stdarg.h>
+#include "CSLayer.h"
 
-#include "base/CSScene.h"
+NS_CS_BEGIN
 
+// Layer
+CSLayer::CSLayer()
+{
+    _ignoreAnchorPointForPosition = true;
+    setAnchorPoint(Vec2(0.5f, 0.5f));
+}
 
+CSLayer::~CSLayer()
+{
 
+}
 
-#endif
+bool CSLayer::init()
+{
+    Director * director = Director::getInstance();
+    setContentSize(director->getWinSize());
+	initWithColor(cocos2d::ccc4(255,0,0,255));
+    return true;
+}
+
+CSLayer *CSLayer::create()
+{
+    CSLayer *ret = new (std::nothrow) CSLayer();
+    if (ret && ret->init())
+    {
+        ret->autorelease();
+        return ret;
+    }
+    else
+    {
+        CC_SAFE_DELETE(ret);
+        return nullptr;
+    }
+}
+
+NS_CS_END

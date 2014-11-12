@@ -50,6 +50,7 @@ enum class CameraFlag
 class CC_DLL Camera :public Node
 {
     friend class Scene;
+
 public:
     /**
     * The type of camera.

@@ -20,17 +20,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
+#ifndef __CSLAYER_H__
+#define __CSLAYER_H__
 
-#include "base/CSScene.h"
+#include "cocos2d.h"
+#include "../platform/CSPlatformMacros.h"
 
+USING_NS_CC;
 
+NS_CS_BEGIN
 
+/**
+ * @addtogroup layer
+ * @{
+ */
 
-#endif
+class __Set;
+class TouchScriptHandlerEntry;
+
+class EventListenerTouch;
+class EventListenerKeyboard;
+class EventListenerAcceleration;
+
+class Touch;
+
+//
+// Layer
+//
+/** @brief Layer is a subclass of Node that implements the TouchEventsDelegate protocol.
+
+All features from Node are valid, plus the following new features:
+- It can receive iPhone Touches
+- It can receive Accelerometer input
+*/
+class CS_DLL CSLayer : public LayerColor
+{
+public:    
+    /** creates a fullscreen black layer */
+    static CSLayer *create();
+    
+    CSLayer();
+    virtual ~CSLayer();
+
+    virtual bool init() override;
+
+};
+
+// end of layer group
+/// @}
+
+NS_CS_END
+
+#endif // __CSLAYER_H__
+
