@@ -41,7 +41,6 @@ bool CSLayer::init()
 {
     Director * director = Director::getInstance();
     setContentSize(director->getWinSize());
-	initWithColor(cocos2d::ccc4(255,0,0,255));
     return true;
 }
 
@@ -59,5 +58,18 @@ CSLayer *CSLayer::create()
         return nullptr;
     }
 }
+
+CSLayer *CSLayer::create(const Color4B& color)
+{
+	CSLayer * layer = new (std::nothrow) CSLayer();
+	if(layer && layer->initWithColor(color))
+	{
+		layer->autorelease();
+		return layer;
+	}
+	CC_SAFE_DELETE(layer);
+	return nullptr;
+}
+
 
 NS_CS_END

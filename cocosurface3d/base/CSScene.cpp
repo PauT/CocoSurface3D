@@ -31,7 +31,9 @@ USING_NS_CC;
 NS_CS_BEGIN
 
 CSScene::CSScene()
-:_isEditMode(false)
+:_isEditMode(false),
+_cameraRotateMode(CAMERA_ROTATE_NONE),
+m_camera3d(nullptr)
 {
 }
 
@@ -75,11 +77,17 @@ CSScene* CSScene::createWithSize(const Size& size)
 bool CSScene::init()
 {
 	Scene::init();
-
+	
 	/** test part need remove*/
-	auto layer3D = CSLayer::create();
-	addChild(layer3D, 0);
-	layer3D->setPosition3D(Vec3(0,0, 0));
+	auto layer3D = CSLayer::create(cocos2d::ccc4(0,255,0,255));
+	_layer3D = layer3D;
+	addChild(_layer3D, 0);
+	_layer3D->setPosition3D(Vec3(50,0,-20));
+	resetCamera();
+
+	auto layer3DChild1 = CSLayer::create(cocos2d::ccc4(255,0,0,255));
+	_layer3D->addChild(layer3DChild1, 0);
+	layer3DChild1->setPosition3D(Vec3(0,0,0));
 
 	auto keyListener = cocos2d::EventListenerKeyboard::create();
 	keyListener->onKeyPressed = CC_CALLBACK_2(CSScene::onKeyDown, this);
@@ -88,8 +96,12 @@ bool CSScene::init()
 	auto touchListener = cocos2d::EventListenerTouchAllAtOnce::create();
 	touchListener->onTouchesMoved = CC_CALLBACK_2(CSScene::onTouchesMoved, this);
 
+	auto mouseListener = cocos2d::EventListenerMouse::create();
+	mouseListener->onMouseScroll = CC_CALLBACK_1(CSScene::onMouseScroll, this);
+
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 	return true;
 }
 
@@ -98,24 +110,26 @@ void CSScene::resetCamera()
 {
 	if(_isEditMode)
 	{
-		_defaultCamera->removeFromParent();
+		if(m_camera3d)
+			m_camera3d->removeFromParent();
 		auto s = Director::getInstance()->getWinSize();
 		float zeye = Director::getInstance()->getZEye() + 100;
-		auto camera = cocos2d::Camera::createPerspective(60, (GLfloat)s.width / s.height, 10, zeye + s.height / 2.0f);
+		auto camera = cocos2d::Camera::createPerspective(60, (GLfloat)s.width / s.height, 10, zeye + s.height/* / 2.0f*/);
 		Vec3 eye(s.width/2, s.height/2.0f, zeye), center(s.width/2, s.height/2, 0.0f), up(0.0f, 1.0f, 0.0f);
 		camera->setPosition3D(eye);
 		camera->lookAt(center, up);
-		_defaultCamera = camera;
-		addChild(_defaultCamera);
+		m_camera3d = camera;
+		_layer3D->addChild(m_camera3d);
 	} else 
 	{
-		_defaultCamera->removeFromParent();
+		if(m_camera3d)
+			m_camera3d->removeFromParent();
 		auto camera = cocos2d::Camera::create();
-		_defaultCamera = camera;
-		addChild(_defaultCamera);
+		m_camera3d = camera;
+		_layer3D->addChild(m_camera3d);
 	}
 }
-
+/** touch move*/
 void CSScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, Event* event)
 {
 	if(touches.size()==1 && _isEditMode)
@@ -125,35 +139,59 @@ void CSScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, Event*
 		auto PreviousLocation = touch->getPreviousLocation();
 		Point newPos = PreviousLocation - location;
 
-		Vec3 cameraDir;
-		Vec3 cameraRightDir;
-		_defaultCamera->getNodeToWorldTransform().getForwardVector(&cameraDir);
-		cameraDir.normalize();
-		cameraDir.y=0;
-		_defaultCamera->getNodeToWorldTransform().getRightVector(&cameraRightDir);
-		cameraRightDir.normalize();
-		cameraRightDir.y=0;
-		Vec3 cameraPos=  _defaultCamera->getPosition3D();
-		cameraPos+=cameraDir*newPos.y*0.5;
-		cameraPos+=cameraRightDir*newPos.x*0.5;
-		_defaultCamera->setPosition3D(cameraPos);      
+		if(_cameraRotateMode == CAMERA_ROTATE_XY)
+		{
+			Vec3  rotation3D= m_camera3d->getRotation3D();
+			rotation3D.x+= newPos.y*0.1;
+			rotation3D.y+= newPos.x*0.1;
+			m_camera3d->setRotation3D(rotation3D);
+		} else if(_cameraRotateMode == CAMERA_TRANSLATE_XY)
+		{
+			Vec3 cameraPos=  m_camera3d->getPosition3D();
+			cameraPos.x+=newPos.x*0.5;
+			cameraPos.y+=newPos.y*0.5;
+			m_camera3d->setPosition3D(cameraPos);   
+		}
+		   
 	}
 }
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 /** windows event */
-void CSScene::onKeyDown(EventKeyboard::KeyCode keyCode, Event* event)
+void CSScene::onKeyDown (EventKeyboard::KeyCode keyCode, Event* event)
 {
 	switch(keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_E:
+		// edit mode switch 
 		_isEditMode = !_isEditMode;
 		resetCamera();
+		break;
+	case EventKeyboard::KeyCode::KEY_R:
+		// reset camera
+		if(_cameraRotateMode != CAMERA_ROTATE_NONE)
+			resetCamera();
+		break;
+	case EventKeyboard::KeyCode::KEY_CTRL:
+		// switch camera to rotate mode
+		_cameraRotateMode = CAMERA_ROTATE_XY;
+		break;
+	case EventKeyboard::KeyCode::KEY_SPACE:
+		// switch camera to rotate mode
+		_cameraRotateMode = CAMERA_TRANSLATE_XY;
 		break;
 	}
 }
 void CSScene::onKeyUp(EventKeyboard::KeyCode keyCode, Event* event)
 {
-
+	switch(keyCode)
+	{
+	case EventKeyboard::KeyCode::KEY_CTRL:
+		_cameraRotateMode = CAMERA_ROTATE_NONE;
+		break;
+	case EventKeyboard::KeyCode::KEY_SPACE:
+		_cameraRotateMode = CAMERA_ROTATE_NONE;
+		break;
+	}
 }
 
 void CSScene::onMouseDown(Event* event)
@@ -170,7 +208,15 @@ void CSScene::onMouseMove(Event* event)
 }
 void CSScene::onMouseScroll(Event* event)
 {
-
+	if(_isEditMode)
+	{
+		EventMouse* e = (EventMouse*)event;
+		float ey = e->getScrollY();
+		Vec3 cameraPos=  m_camera3d->getPosition3D();
+		cameraPos.z+=ey * 10;
+		m_camera3d->setPosition3D(cameraPos);
+	}
+	
 }
 #endif
 

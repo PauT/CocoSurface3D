@@ -76,9 +76,18 @@ CC_CONSTRUCTOR_ACCESS:
     virtual ~CSScene();
 
 protected:
-
+	/** cslayer list */
+	CC_SYNTHESIZE(CSLayer*, _layer3D, Layer3D);
 	/** edit mode switch */
 	CC_SYNTHESIZE(bool, _isEditMode, EditMode);
+
+	/** rotate camera mode */
+	enum CAMERA_MODE{
+		CAMERA_ROTATE_NONE = 0,
+		CAMERA_TRANSLATE_XY,
+		CAMERA_ROTATE_XY,
+	};
+	CC_SYNTHESIZE(CAMERA_MODE, _cameraRotateMode, CameraRotateMode);
 	/** init camera */
 	void resetCamera();
 
@@ -93,7 +102,8 @@ protected:
 	void onMouseMove(Event* event);
 	void onMouseScroll(Event* event);
 #endif
-
+public:
+	CC_SYNTHESIZE(cocos2d::Camera*, m_camera3d, Camera);
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(CSScene);
 

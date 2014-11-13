@@ -58,6 +58,8 @@ class CS_DLL CSLayer : public LayerColor
 public:    
     /** creates a fullscreen black layer */
     static CSLayer *create();
+	/** creates a Layer with color. Width and height are the window size. */
+	static CSLayer * create(const Color4B& color);
     
     CSLayer();
     virtual ~CSLayer();
