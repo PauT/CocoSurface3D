@@ -76,18 +76,24 @@ CSScene* CSScene::createWithSize(const Size& size)
 /** init scene */
 bool CSScene::init()
 {
-	Scene::init();
+	Size s = cocos2d::Director::getInstance()->getWinSize();
+	return initWithSize(s);
+}
+
+bool CSScene::initWithSize(const Size& size)
+{
+	Scene::initWithSize(size);
 	
 	/** test part need remove*/
-	auto layer3D = CSLayer::create(cocos2d::ccc4(0,255,0,255));
+	auto layer3D = CSLayer::create(cocos2d::ccc4(0,0,0,0), size.width, size.height);
 	_layer3D = layer3D;
 	addChild(_layer3D, 0);
 	_layer3D->setPosition3D(Vec3(50,0,-20));
 	resetCamera();
 
-	auto layer3DChild1 = CSLayer::create(cocos2d::ccc4(255,0,0,255));
+	/*auto layer3DChild1 = CSLayer::create(cocos2d::ccc4(255,0,0,255));
 	_layer3D->addChild(layer3DChild1, 0);
-	layer3DChild1->setPosition3D(Vec3(0,0,0));
+	layer3DChild1->setPosition3D(Vec3(0,0,0));*/
 
 	auto keyListener = cocos2d::EventListenerKeyboard::create();
 	keyListener->onKeyPressed = CC_CALLBACK_2(CSScene::onKeyDown, this);
@@ -112,12 +118,19 @@ void CSScene::resetCamera()
 	{
 		if(m_camera3d)
 			m_camera3d->removeFromParent();
+		
 		auto s = Director::getInstance()->getWinSize();
 		float zeye = Director::getInstance()->getZEye() + 100;
-		auto camera = cocos2d::Camera::createPerspective(60, (GLfloat)s.width / s.height, 10, zeye + s.height/* / 2.0f*/);
+		auto camera = cocos2d::Camera::createPerspective(60, (GLfloat)s.width / s.height, 10, 9999/*zeye + s.height / 2.0f*/);
+		
+		
 		Vec3 eye(s.width/2, s.height/2.0f, zeye), center(s.width/2, s.height/2, 0.0f), up(0.0f, 1.0f, 0.0f);
+		//eye at x:0 y:0 z:zeye
+		//Vec3 eye(0, 0, zeye), center(0, 0, 0.0f), up(0.0f, 1.0f, 0.0f);
+		
 		camera->setPosition3D(eye);
 		camera->lookAt(center, up);
+		
 		m_camera3d = camera;
 		_layer3D->addChild(m_camera3d);
 	} else 
@@ -129,6 +142,9 @@ void CSScene::resetCamera()
 		_layer3D->addChild(m_camera3d);
 	}
 }
+
+
+
 /** touch move*/
 void CSScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, Event* event)
 {
@@ -142,15 +158,36 @@ void CSScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, Event*
 		if(_cameraRotateMode == CAMERA_ROTATE_XY)
 		{
 			Vec3  rotation3D= m_camera3d->getRotation3D();
-			rotation3D.x+= newPos.y*0.1;
-			rotation3D.y+= newPos.x*0.1;
+			rotation3D.x-= newPos.y*0.1;
+			rotation3D.y-= newPos.x*0.1;
 			m_camera3d->setRotation3D(rotation3D);
+
 		} else if(_cameraRotateMode == CAMERA_TRANSLATE_XY)
 		{
 			Vec3 cameraPos=  m_camera3d->getPosition3D();
-			cameraPos.x+=newPos.x*0.5;
-			cameraPos.y+=newPos.y*0.5;
-			m_camera3d->setPosition3D(cameraPos);   
+			Vec3 rotation3D= m_camera3d->getRotation3D();
+
+			Vec3 cameraDir;
+			Vec3 cameraRightDir;
+			Vec3 cameraUpDir;
+   			m_camera3d->getNodeToWorldTransform().getForwardVector(&cameraDir);
+			cameraDir.normalize();
+			m_camera3d->getNodeToWorldTransform().getRightVector(&cameraRightDir);
+			cameraRightDir.normalize();
+			m_camera3d->getNodeToWorldTransform().getUpVector(&cameraUpDir);
+			cameraUpDir.normalize();
+
+			cameraPos.z += sinf(cameraRightDir.z) * newPos.x * 0.5;
+			cameraPos.x += sinf(cameraRightDir.x) * newPos.x * 0.5;
+			
+			cameraPos.y += cosf(cameraUpDir.y) * newPos.y * 0.5;
+			//cameraPos.z += cosf(cameraUpDir.z) * newPos.y * 0.5;
+
+			//cameraPos.x += sinf(Vec3::angle(Vec3))*newPos.x*0.5;
+
+			//cameraPos.x+=newPos.x*0.5;
+			//cameraPos.y+=newPos.y*0.5;
+			m_camera3d->setPosition3D(cameraPos);  
 		}
 		   
 	}
@@ -164,6 +201,8 @@ void CSScene::onKeyDown (EventKeyboard::KeyCode keyCode, Event* event)
 	case EventKeyboard::KeyCode::KEY_E:
 		// edit mode switch 
 		_isEditMode = !_isEditMode;
+		if(_isEditMode)
+			_layer3D->setShowAxis(true);
 		resetCamera();
 		break;
 	case EventKeyboard::KeyCode::KEY_R:
@@ -212,8 +251,21 @@ void CSScene::onMouseScroll(Event* event)
 	{
 		EventMouse* e = (EventMouse*)event;
 		float ey = e->getScrollY();
-		Vec3 cameraPos=  m_camera3d->getPosition3D();
+		/*Vec3 cameraPos=  m_camera3d->getPosition3D();
 		cameraPos.z+=ey * 10;
+		m_camera3d->setPosition3D(cameraPos);*/
+
+		Vec3 cameraDir;
+		Vec3 cameraRightDir;
+		m_camera3d->getNodeToWorldTransform().getForwardVector(&cameraDir);
+		cameraDir.normalize();
+		m_camera3d->getNodeToWorldTransform().getRightVector(&cameraRightDir);
+		cameraRightDir.normalize();
+
+		Vec3 cameraPos=  m_camera3d->getPosition3D();
+		cameraPos.z -= sinf(cameraDir.z) * ey * 10;
+		cameraPos.x -= sinf(cameraDir.x) * ey * 10;
+		cameraPos.y -= sinf(cameraDir.y) * ey * 10;
 		m_camera3d->setPosition3D(cameraPos);
 	}
 	

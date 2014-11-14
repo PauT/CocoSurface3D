@@ -53,18 +53,29 @@ All features from Node are valid, plus the following new features:
 - It can receive iPhone Touches
 - It can receive Accelerometer input
 */
-class CS_DLL CSLayer : public LayerColor
+class CS_DLL CSLayer : public cocos2d::LayerColor
 {
 public:    
     /** creates a fullscreen black layer */
     static CSLayer *create();
 	/** creates a Layer with color. Width and height are the window size. */
 	static CSLayer * create(const Color4B& color);
+	/** creates a Layer with color, width and height in Points */
+	static CSLayer * create(const Color4B& color, GLfloat width, GLfloat height);
     
     CSLayer();
     virtual ~CSLayer();
 
     virtual bool init() override;
+
+	// show axis
+	CC_SYNTHESIZE(bool, _showAxis, ShowAxis);
+	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags);
+protected:
+	// draw coordinate axis
+	
+	virtual void onDraw(const Mat4 &transform, uint32_t flags);
+	CustomCommand _customCommand;
 
 };
 

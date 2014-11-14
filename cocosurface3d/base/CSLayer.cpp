@@ -27,6 +27,7 @@ NS_CS_BEGIN
 
 // Layer
 CSLayer::CSLayer()
+:_showAxis(false)
 {
     _ignoreAnchorPointForPosition = true;
     setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -39,6 +40,7 @@ CSLayer::~CSLayer()
 
 bool CSLayer::init()
 {
+	CCLayerColor::init();
     Director * director = Director::getInstance();
     setContentSize(director->getWinSize());
     return true;
@@ -69,6 +71,54 @@ CSLayer *CSLayer::create(const Color4B& color)
 	}
 	CC_SAFE_DELETE(layer);
 	return nullptr;
+}
+
+CSLayer *CSLayer::create(const Color4B& color, GLfloat width, GLfloat height)
+{
+	CSLayer * layer = new (std::nothrow) CSLayer();
+	if(layer && layer->initWithColor(color, width, height))
+	{
+		layer->autorelease();
+		return layer;
+	}
+	CC_SAFE_DELETE(layer);
+	return nullptr;
+}
+
+void CSLayer::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+{
+	
+	if(_showAxis)
+	{
+		// draw coordinate axis
+		_customCommand.init(_globalZOrder);
+		_customCommand.func = CC_CALLBACK_0(CSLayer::onDraw, this, transform, flags);
+		renderer->addCommand(&_customCommand);
+	}
+	cocos2d::CCLayerColor::draw(renderer, transform, flags);
+}
+void CSLayer::onDraw(const Mat4 &transform, uint32_t flags)
+{
+	cocos2d::Director* director = cocos2d::Director::getInstance();
+	director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
+
+	// draw coordinate axis
+	glLineWidth( 5.0f );
+	cocos2d::DrawPrimitives::setDrawColor4B(255,0,0,255);
+	cocos2d::DrawPrimitives::drawLine3D( Vec3(-getContentSize().width,0, 0), Vec3(getContentSize().width, 0, 0) );
+
+	glLineWidth( 5.0f );
+	cocos2d::DrawPrimitives::setDrawColor4B(0,255,0,255);
+	cocos2d::DrawPrimitives::drawLine3D( Vec3(0,-getContentSize().height, 0), Vec3(0,getContentSize().height, 0) );
+
+	glLineWidth( 5.0f );
+	cocos2d::DrawPrimitives::setDrawColor4B(0,0,255,255);
+	cocos2d::DrawPrimitives::drawLine3D( Vec3(0,0,-1000), Vec3(0,0,1000) );
+
+	//end draw
+	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+
 }
 
 

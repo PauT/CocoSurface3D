@@ -94,6 +94,10 @@ namespace DrawPrimitives
 
     /** draws a line given the origin and destination point measured in points */
     CC_DEPRECATED_ATTRIBUTE void CC_DLL drawLine(const Vec2& origin, const Vec2& destination);
+#ifdef _COCOSURFACE3D
+	/** draws a line given the origin and destination point measured in points */
+	CC_DEPRECATED_ATTRIBUTE void CC_DLL drawLine3D(const Vec3& origin, const Vec3& destination);
+#endif
 
     /** draws a rectangle given the origin and destination point measured in points. */
     CC_DEPRECATED_ATTRIBUTE void CC_DLL drawRect(Vec2 origin, Vec2 destination);

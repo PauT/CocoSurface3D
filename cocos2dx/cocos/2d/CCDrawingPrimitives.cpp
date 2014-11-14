@@ -228,6 +228,32 @@ void drawLine(const Vec2& origin, const Vec2& destination)
     CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,2);
 }
 
+#ifdef _COCOSURFACE3D
+void drawLine3D(const Vec3& origin, const Vec3& destination)
+{
+	lazy_init();
+
+	Vec3 vertices[2] = {
+		Vec3(origin.x, origin.y, origin.z),
+		Vec3(destination.x, destination.y, destination.z)
+	};
+
+	s_shader->use();
+	s_shader->setUniformsForBuiltins();
+	s_shader->setUniformLocationWith4fv(s_colorLocation, (GLfloat*) &s_color.r, 1);
+
+	GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
+#ifdef EMSCRIPTEN
+	setGLBufferData(vertices, 16);
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
+#else
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+#endif // EMSCRIPTEN
+	glDrawArrays(GL_LINES, 0, 2);
+
+	CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1,2);
+}
+#endif
 void drawRect( Vec2 origin, Vec2 destination )
 {
     drawLine(Vec2(origin.x, origin.y), Vec2(destination.x, origin.y));

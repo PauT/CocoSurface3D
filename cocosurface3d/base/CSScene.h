@@ -69,7 +69,9 @@ public:
     static CSScene *createWithSize(const Size& size);
 
 	/** init scene */
-	bool init();
+	virtual bool init();
+	/** init scene */
+	bool initWithSize(const Size& size);
     
 CC_CONSTRUCTOR_ACCESS:
     CSScene();
@@ -80,6 +82,8 @@ protected:
 	CC_SYNTHESIZE(CSLayer*, _layer3D, Layer3D);
 	/** edit mode switch */
 	CC_SYNTHESIZE(bool, _isEditMode, EditMode);
+	/** look at point */
+	CC_SYNTHESIZE(Vec3, _lookAtCenter, LookAt);
 
 	/** rotate camera mode */
 	enum CAMERA_MODE{
