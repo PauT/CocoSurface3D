@@ -91,9 +91,31 @@ bool CSScene::initWithSize(const Size& size)
 	_layer3D->setPosition3D(Vec3(50,0,-20));
 	resetCamera();
 
-	/*auto layer3DChild1 = CSLayer::create(cocos2d::ccc4(255,0,0,255));
+	auto layer3DChild1 = CSLayer::create(cocos2d::ccc4(255,0,0,0));
 	_layer3D->addChild(layer3DChild1, 0);
-	layer3DChild1->setPosition3D(Vec3(0,0,0));*/
+	layer3DChild1->setPosition3D(Vec3(0,0,0));
+
+	auto sprite = Sprite::create("Images/background3.jpg");
+	sprite->setAnchorPoint(cocos2d::Vec2(0,0));
+	layer3DChild1->addChild(sprite);
+
+	auto sprite3D = Sprite3D::create("Sprite3DTest/tortoise.c3b", "Sprite3DTest/tortoise.png");
+	sprite3D->setPosition3D(cocos2d::Vec3(0,0,0));
+	sprite3D->setAnchorPoint(cocos2d::Vec2(0,0));
+	layer3DChild1->addChild(sprite3D);
+
+
+	
+
+	auto animation = Animation3D::create("Sprite3DTest/tortoise.c3b");
+	if (animation)
+	{
+		auto animate = Animate3D::create(animation, 0.f, 1.933f);
+		auto swim = RepeatForever::create(animate);
+		sprite3D->runAction(swim);
+		swim->retain();
+	}
+	
 
 	auto keyListener = cocos2d::EventListenerKeyboard::create();
 	keyListener->onKeyPressed = CC_CALLBACK_2(CSScene::onKeyDown, this);

@@ -14,6 +14,12 @@
     <ClInclude Include="..\base\CSLayer.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\CSTileMap.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\CSUndoManager.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cocosurface3d.cpp" />
@@ -21,6 +27,12 @@
       <Filter>base</Filter>
     </ClCompile>
     <ClCompile Include="..\base\CSLayer.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\CSTileMap.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\CSUndoManager.cpp">
       <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>

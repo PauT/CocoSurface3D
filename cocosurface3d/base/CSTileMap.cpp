@@ -21,34 +21,33 @@ THE SOFTWARE.
 ****************************************************************************/
 
 #include <stdarg.h>
-#include "CSLayer.h"
+#include "CSTileMap.h"
 
 NS_CS_BEGIN
 
 // Layer
-CSLayer::CSLayer()
-:_showAxis(false)
+CSTileMap::CSTileMap()
 {
     _ignoreAnchorPointForPosition = true;
     setAnchorPoint(Vec2(0.5f, 0.5f));
 }
 
-CSLayer::~CSLayer()
+CSTileMap::~CSTileMap()
 {
 
 }
 
-bool CSLayer::init()
+bool CSTileMap::init()
 {
-	CCLayerColor::init();
+	CCLayer::init();
     Director * director = Director::getInstance();
     setContentSize(director->getWinSize());
     return true;
 }
 
-CSLayer *CSLayer::create()
+CSTileMap *CSTileMap::create()
 {
-    CSLayer *ret = new (std::nothrow) CSLayer();
+    CSTileMap *ret = new (std::nothrow) CSTileMap();
     if (ret && ret->init())
     {
         ret->autorelease();
@@ -61,10 +60,10 @@ CSLayer *CSLayer::create()
     }
 }
 
-CSLayer *CSLayer::create(const Color4B& color)
+CSTileMap *CSTileMap::create(std::string filename)
 {
-	CSLayer * layer = new (std::nothrow) CSLayer();
-	if(layer && layer->initWithColor(color))
+	CSTileMap * layer = new (std::nothrow) CSTileMap();
+	if(layer && layer->initWithImage(filename))
 	{
 		layer->autorelease();
 		return layer;
@@ -73,10 +72,10 @@ CSLayer *CSLayer::create(const Color4B& color)
 	return nullptr;
 }
 
-CSLayer *CSLayer::create(const Color4B& color, GLfloat width, GLfloat height)
+CSTileMap *CSTileMap::create(std::string filename, GLfloat width, GLfloat height)
 {
-	CSLayer * layer = new (std::nothrow) CSLayer();
-	if(layer && layer->initWithColor(color, width, height))
+	CSTileMap * layer = new (std::nothrow) CSTileMap();
+	if(layer && layer->initWithImage(filename, width, height))
 	{
 		layer->autorelease();
 		return layer;
@@ -85,41 +84,16 @@ CSLayer *CSLayer::create(const Color4B& color, GLfloat width, GLfloat height)
 	return nullptr;
 }
 
-void CSLayer::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+bool CSTileMap::initWithImage(std::string filename)
 {
-	
-	if(_showAxis)
-	{
-		// draw coordinate axis
-		_customCommand.init(_globalZOrder);
-		_customCommand.func = CC_CALLBACK_0(CSLayer::drawAxis, this, transform, flags);
-		renderer->addCommand(&_customCommand);
-	}
-	cocos2d::CCLayerColor::draw(renderer, transform, flags);
+	Size s = Director::getInstance()->getWinSize();
+	return initWithImage(filename, s.width, s.height);
 }
-void CSLayer::drawAxis(const Mat4 &transform, uint32_t flags)
+bool CSTileMap::initWithImage(std::string filename, GLfloat width, GLfloat height)
 {
-	cocos2d::Director* director = cocos2d::Director::getInstance();
-	director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
-
-	// draw coordinate axis
-	glLineWidth( 5.0f );
-	cocos2d::DrawPrimitives::setDrawColor4B(255,0,0,255);
-	cocos2d::DrawPrimitives::drawLine3D( Vec3(-getContentSize().width,0, 0), Vec3(getContentSize().width, 0, 0) );
-
-	glLineWidth( 5.0f );
-	cocos2d::DrawPrimitives::setDrawColor4B(0,255,0,255);
-	cocos2d::DrawPrimitives::drawLine3D( Vec3(0,-getContentSize().height, 0), Vec3(0,getContentSize().height, 0) );
-
-	glLineWidth( 5.0f );
-	cocos2d::DrawPrimitives::setDrawColor4B(0,0,255,255);
-	cocos2d::DrawPrimitives::drawLine3D( Vec3(0,0,-1000), Vec3(0,0,1000) );
-
-	//end draw
-	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-
+	_tileBatchNode = SpriteBatchNode::create(filename, 50);
+	addChild(_tileBatchNode);
+	return true;
 }
-
 
 NS_CS_END

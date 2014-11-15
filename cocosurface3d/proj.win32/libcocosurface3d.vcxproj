@@ -105,6 +105,8 @@
   <ItemGroup>
     <ClInclude Include="..\base\CSLayer.h" />
     <ClInclude Include="..\base\CSScene.h" />
+    <ClInclude Include="..\base\CSTileMap.h" />
+    <ClInclude Include="..\base\CSUndoManager.h" />
     <ClInclude Include="..\cocosurface3d.h" />
     <ClInclude Include="..\platform\CSPlatformMacros.h" />
     <ClInclude Include="..\platform\win32\CSPlatformDefine-win32.h" />
@@ -112,6 +114,8 @@
   <ItemGroup>
     <ClCompile Include="..\base\CSLayer.cpp" />
     <ClCompile Include="..\base\CSScene.cpp" />
+    <ClCompile Include="..\base\CSTileMap.cpp" />
+    <ClCompile Include="..\base\CSUndoManager.cpp" />
     <ClCompile Include="..\cocosurface3d.cpp" />
   </ItemGroup>
   <ItemGroup>

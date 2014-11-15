@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __CSLAYER_H__
-#define __CSLAYER_H__
+#ifndef __CSTILEMAP_H__
+#define __CSTILEMAP_H__
 
 #include "cocos2d.h"
 #include "../platform/CSPlatformMacros.h"
@@ -53,28 +53,26 @@ All features from Node are valid, plus the following new features:
 - It can receive iPhone Touches
 - It can receive Accelerometer input
 */
-class CS_DLL CSLayer : public cocos2d::LayerColor
+class CS_DLL CSTileMap : public cocos2d::CCLayer
 {
 public:    
     /** creates a fullscreen black layer */
-    static CSLayer *create();
+    static CSTileMap *create();
 	/** creates a Layer with color. Width and height are the window size. */
-	static CSLayer * create(const Color4B& color);
+	static CSTileMap * create(std::string filename);
 	/** creates a Layer with color, width and height in Points */
-	static CSLayer * create(const Color4B& color, GLfloat width, GLfloat height);
+	static CSTileMap * create(std::string filename, GLfloat width, GLfloat height);
     
-    CSLayer();
-    virtual ~CSLayer();
+    CSTileMap();
+    virtual ~CSTileMap();
 
     virtual bool init() override;
-
-	// show axis
-	CC_SYNTHESIZE(bool, _showAxis, ShowAxis);
-	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags);
+	/** init with image */
+	bool	initWithImage(std::string filename);
+	/** init with image */
+	bool	initWithImage(std::string filename, GLfloat width, GLfloat height);
 protected:
-	// draw coordinate axis
-	virtual void drawAxis(const Mat4 &transform, uint32_t flags);
-	CustomCommand _customCommand;
+	CC_SYNTHESIZE(SpriteBatchNode *, _tileBatchNode, TileBatchNode);
 
 };
 
