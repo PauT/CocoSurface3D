@@ -1,10 +1,5 @@
 /****************************************************************************
-Copyright (c) 2008-2010 Ricardo Quesada
-Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2011      Zynga Inc.
-Copyright (c) 2013-2014 Chukong Technologies Inc.
-
-http://www.cocos2d-x.org
+Copyright (c) 2014 PauT
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +23,16 @@ THE SOFTWARE.
 #include "CSScene.h"
 #include "CSLayer.h"
 #include "platform/CSDevice.h"
+#include "CSUndoManager.h"
 USING_NS_CC;
 NS_CS_BEGIN
 
 CSScene::CSScene()
 :_isEditMode(false),
-_cameraRotateMode(CAMERA_ROTATE_NONE),
-m_camera3d(nullptr)
+_cameraRotateMode(CAMERA_NONE),
+m_camera3d(nullptr),
+_isMouseRightButtonDown(false),
+_keyboardState(0)
 {
 }
 
@@ -109,6 +107,10 @@ bool CSScene::initWithSize(const Size& size)
 	// added mouse listener
 	auto mouseListener = cocos2d::EventListenerMouse::create();
 	mouseListener->onMouseScroll = CC_CALLBACK_1(CSScene::onMouseScroll, this);
+	mouseListener->onMouseMove = CC_CALLBACK_1(CSScene::onMouseMove, this);
+	mouseListener->onMouseUp = CC_CALLBACK_1(CSScene::onMouseUp, this);
+	mouseListener->onMouseDown = CC_CALLBACK_1(CSScene::onMouseDown, this);
+	
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 	
 	return true;
@@ -158,14 +160,7 @@ void CSScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, Event*
 		auto PreviousLocation = touch->getPreviousLocation();
 		Point newPos = PreviousLocation - location;
 
-		if(_cameraRotateMode == CAMERA_ROTATE_XY)
-		{
-			Vec3  rotation3D= m_camera3d->getRotation3D();
-			rotation3D.x-= newPos.y*0.1;
-			rotation3D.y-= newPos.x*0.1;
-			m_camera3d->setRotation3D(rotation3D);
-
-		} else if(_cameraRotateMode == CAMERA_TRANSLATE_XY)
+		if(_cameraRotateMode == CAMERA_MOVE_MODE)
 		{
 			Vec3 cameraPos=  m_camera3d->getPosition3D();
 			Vec3 rotation3D= m_camera3d->getRotation3D();
@@ -210,16 +205,23 @@ void CSScene::onKeyDown (EventKeyboard::KeyCode keyCode, Event* event)
 		break;
 	case EventKeyboard::KeyCode::KEY_R:
 		// reset camera
-		if(_cameraRotateMode != CAMERA_ROTATE_NONE)
+		if((_keyboardState & KEY_CTRL_DOWN) > 0)
 			resetCamera();
 		break;
+	case EventKeyboard::KeyCode::KEY_Z:
+		if((_keyboardState & KEY_CTRL_DOWN) > 0)
+			CSUndoManager::getInstance()->Undo();
+		break;
+	case EventKeyboard::KeyCode::KEY_Y:
+		if((_keyboardState & KEY_CTRL_DOWN) > 0)
+			CSUndoManager::getInstance()->Redo();
+		break;
 	case EventKeyboard::KeyCode::KEY_CTRL:
-		// switch camera to rotate mode
-		_cameraRotateMode = CAMERA_ROTATE_XY;
+		_keyboardState |= KEY_CTRL_DOWN;
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		// switch camera to rotate mode
-		_cameraRotateMode = CAMERA_TRANSLATE_XY;
+		_cameraRotateMode = CAMERA_MOVE_MODE;
 		break;
 	}
 }
@@ -228,16 +230,14 @@ void CSScene::onKeyUp(EventKeyboard::KeyCode keyCode, Event* event)
 	switch(keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_CTRL:
-		_cameraRotateMode = CAMERA_ROTATE_NONE;
+		_keyboardState &= ~KEY_CTRL_DOWN;
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
-		_cameraRotateMode = CAMERA_ROTATE_NONE;
+		_cameraRotateMode = CAMERA_NONE;
 		break;
 	case EventKeyboard::KeyCode::KEY_1:
 		//add tilemap
 		std::string fileName = CSDevice::openFileDialog();
-		//auto layercolor = CCLayerColor::create(Color4B(0,0,255,255));
-		//_layer3D->addChild(layercolor);
 		_layer3D->addCSTileMapWithImage(fileName);
 		break;
 	}
@@ -245,15 +245,38 @@ void CSScene::onKeyUp(EventKeyboard::KeyCode keyCode, Event* event)
 
 void CSScene::onMouseDown(Event* event)
 {
-
+	EventMouse* e = (EventMouse*)event;
+	if(e->getMouseButton() == 1)
+	{
+		//right button click
+		_isMouseRightButtonDown = true;
+		_previousMBRLoaction = e->getLocation();
+	}
 }
 void CSScene::onMouseUp(Event* event)
 {
-
+	EventMouse* e = (EventMouse*)event;
+	if(e->getMouseButton() == 1)
+	{
+		//right button click
+		_isMouseRightButtonDown = false;
+	}
 }
 void CSScene::onMouseMove(Event* event)
 {
+	EventMouse* e = (EventMouse*)event;
+	if(_isMouseRightButtonDown && _cameraRotateMode == CAMERA_MOVE_MODE)
+	{
+		auto location = e->getLocation();
+  		auto PreviousLocation = _previousMBRLoaction;
+		_previousMBRLoaction = location;
+		Point newPos = PreviousLocation - location;
 
+		Vec3  rotation3D= m_camera3d->getRotation3D();
+		rotation3D.x-= newPos.y*0.1;
+		rotation3D.y-= newPos.x*0.1;
+		m_camera3d->setRotation3D(rotation3D);
+	}
 }
 void CSScene::onMouseScroll(Event* event)
 {

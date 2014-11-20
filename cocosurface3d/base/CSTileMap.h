@@ -79,6 +79,7 @@ protected:
 
 	virtual void Undo(CSUndoInfo *info);
 	virtual void Redo(CSUndoInfo *info);
+	virtual void clearRedoItem(CSUndoInfo *info);
 };
 
 // end of layer group

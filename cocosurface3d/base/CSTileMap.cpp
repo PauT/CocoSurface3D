@@ -93,33 +93,70 @@ bool CSTileMap::initWithImage(std::string filename)
 }
 bool CSTileMap::initWithImage(std::string filename, GLfloat width, GLfloat height)
 {
-	auto tileBatchNode = CSSpriteBatchNode::create(filename);
+	_tileBatchNode = CSSpriteBatchNode::create(filename);
 	auto sprite = Sprite::create(filename);
-	tileBatchNode->addChild(sprite);
-	addChild(tileBatchNode);
+	auto tags = _tileBatchNode->getChildrenCount();
+	_tileBatchNode->addChild(sprite, tags, tags);
+	addChild(_tileBatchNode);
 
 
-	/*CSUndoInfo *info = new CSUndoInfo();
+	CSUndoInfo *info = new CSUndoInfo();
 	info->actionType = actionType_addMapImage;
-	info->objectList.push_back(this);
-	CSUndoManager::getInstance()->Execute(info);*/
+	info->_target = this;
+	info->objectList.push_back(sprite);
+	CSUndoManager::getInstance()->Execute(info);
 
 	return true;
 }
 
 
-void CSTileMap::undoAddWithImage()
-{
-	removeFromParent();
-}
 
 void CSTileMap::Undo(CSUndoInfo *info)
 {
-
+	switch (info->actionType)
+	{
+	case actionType_addMapImage:
+		{
+			auto sprite = dynamic_cast<Sprite *>(*info->objectList.begin());
+			sprite->retain();
+			if(sprite)
+				sprite->removeFromParent();
+		}
+		break;
+	default:
+		break;
+	}
 }
 void CSTileMap::Redo(CSUndoInfo *info)
 {
-
+	switch (info->actionType)
+	{
+	case actionType_addMapImage:
+		{
+			auto sprite = dynamic_cast<Sprite *>(*info->objectList.begin());
+			if(sprite)
+				_tileBatchNode->addChild(sprite);
+		}
+		break;
+	default:
+		break;
+	}
+}
+void CSTileMap::clearRedoItem(CSUndoInfo *info)
+{
+	switch (info->actionType)
+	{
+	case actionType_addMapImage:
+		{
+			//release object;
+			auto sprite = dynamic_cast<Sprite *>(*info->objectList.begin());
+			if(sprite)
+				sprite->release();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 NS_CS_END

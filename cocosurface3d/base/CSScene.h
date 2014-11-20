@@ -1,10 +1,5 @@
 /****************************************************************************
-Copyright (c) 2008-2010 Ricardo Quesada
-Copyright (c) 2010-2012 cocos2d-x.org
-Copyright (c) 2011      Zynga Inc.
-Copyright (c) 2013-2014 Chukong Technologies Inc.
-
-http://www.cocos2d-x.org
+Copyright (c) 2014 PauT
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -87,9 +82,8 @@ protected:
 
 	/** rotate camera mode */
 	enum CAMERA_MODE{
-		CAMERA_ROTATE_NONE = 0,
-		CAMERA_TRANSLATE_XY,
-		CAMERA_ROTATE_XY,
+		CAMERA_NONE = 0,
+		CAMERA_MOVE_MODE,
 	};
 	CC_SYNTHESIZE(CAMERA_MODE, _cameraRotateMode, CameraRotateMode);
 	/** init camera */
@@ -99,9 +93,17 @@ protected:
 
 	void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, Event* event);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+
+	#define KEY_CTRL_DOWN		0x01
+	#define KEY_ALT_DOWN		0x10
+	int	 _keyboardState;
 	/** windows event */
 	void onKeyDown(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyUp(EventKeyboard::KeyCode keyCode, Event* event);
+
+	/** is mouse right button down */
+	bool _isMouseRightButtonDown;
+	Vec2 _previousMBRLoaction;
 
 	void onMouseDown(Event* event);
 	void onMouseUp(Event* event);

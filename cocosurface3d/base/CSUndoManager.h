@@ -27,8 +27,15 @@ struct CSUndoInfo {
 class CSUndoItem
 {
 public:
+
+	/** This part must process by UndoItem */
 	virtual void Undo(CSUndoInfo *info) = 0;
+
+	/** This part must process by UndoItem */
 	virtual void Redo(CSUndoInfo *info) = 0;
+
+	/**When clear redo list, Message will disappear forever so need release some object by UndoItem */
+	virtual void clearRedoItem(CSUndoInfo *info) = 0;
 };
 
 class CS_DLL CSUndoManager : public Node

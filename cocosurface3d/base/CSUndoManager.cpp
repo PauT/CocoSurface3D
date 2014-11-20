@@ -22,6 +22,7 @@ void CSUndoManager::Undo()
 	if(target != nullptr)
 		target->Undo((*info));
 
+	m_redoList.push_back(*info);
 	m_undoList.erase(info);
 }
 void CSUndoManager::Redo()
@@ -36,6 +37,7 @@ void CSUndoManager::Redo()
 	if(target != nullptr)
 		target->Redo((*info));
 
+	m_undoList.push_back(*info);
 	m_redoList.erase(info);
 }
 void CSUndoManager::Execute(CSUndoInfo *info)
@@ -51,7 +53,10 @@ void CSUndoManager::clearUndoList()
 void CSUndoManager::clearRedoList()
 {
 	//没释放完全,隐患待处理
-
+	for( auto &obj : m_redoList )
+	{
+		obj->_target->clearRedoItem(obj);
+	}
 	m_redoList.clear();
 }
 
