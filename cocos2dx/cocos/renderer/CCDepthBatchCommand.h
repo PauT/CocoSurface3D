@@ -22,68 +22,39 @@
  THE SOFTWARE.
  ****************************************************************************/
 
+#ifndef _CC_CSBATCHCOMMAND_H_
+#define _CC_CSBATCHCOMMAND_H_
 
-#ifndef __CCRENDERCOMMAND_H_
-#define __CCRENDERCOMMAND_H_
-
-#include <stdint.h>
-
-#include "platform/CCPlatformMacros.h"
-#include "base/ccTypes.h"
+#include "renderer/CCRenderCommand.h"
 
 NS_CC_BEGIN
 
-/** Base class of the `RenderCommand` hierarchy.
-*
- The `Renderer` knows how to render `RenderCommands` objects.
- */
-class CC_DLL RenderCommand
+class TextureAtlas;
+class GLProgram;
+
+class CC_DLL DepthBatchCommand : public RenderCommand
 {
 public:
 
-    enum class Type
-    {
-        UNKNOWN_COMMAND,
-        QUAD_COMMAND,
-        CUSTOM_COMMAND,
-        BATCH_COMMAND,
-        GROUP_COMMAND,
-        MESH_COMMAND,
-        PRIMITIVE_COMMAND,
-        TRIANGLES_COMMAND,
-#ifdef _COCOSURFACE3D
-		DEPTH_BATCH_COMMAND
-#endif
-    };
+    DepthBatchCommand();
+    ~DepthBatchCommand();
 
-    /** Get Render Command Id */
-    inline float getGlobalOrder() const { return _globalOrder; }
+    void init(float depth, GLProgram* shader, BlendFunc blendType, TextureAtlas *textureAtlas, const Mat4& modelViewTransform);
 
-    /** Returns the Command type */
-    inline Type getType() const { return _type; }
-    
-    /** Retruns whether is transparent */
-    inline bool isTransparent() const { return _isTransparent; }
-    
-    /** set transparent flag */
-    inline void setTransparent(bool isTransparent) { _isTransparent = isTransparent; }
+    void execute();
 
 protected:
-    RenderCommand();
-    virtual ~RenderCommand();
+    //Material
+    int32_t _materialID;
+    GLuint _textureID;
+    GLProgram* _shader;
+    BlendFunc _blendType;
 
-    void printID();
+    TextureAtlas *_textureAtlas;
 
-    // Type used in order to avoid dynamic cast, faster
-    Type _type;
-
-    // commands are sort by depth
-    float _globalOrder;
-    
-    // transparent flag
-    bool  _isTransparent;
+    // ModelView transform
+    Mat4 _mv;
 };
-
 NS_CC_END
 
-#endif //__CCRENDERCOMMAND_H_
+#endif //_CC_BATCHCOMMAND_H_

@@ -22,6 +22,9 @@ THE SOFTWARE.
 
 #include <stdarg.h>
 #include "CSLayer.h"
+#include "CSTileMap.h"
+
+USING_NS_CC;
 
 NS_CS_BEGIN
 
@@ -31,6 +34,13 @@ CSLayer::CSLayer()
 {
     _ignoreAnchorPointForPosition = true;
     setAnchorPoint(Vec2(0.5f, 0.5f));
+
+	
+
+	_drawAxis = DrawNode3D::create();
+	addChild(_drawAxis, 0);
+	scheduleUpdate();
+	
 }
 
 CSLayer::~CSLayer()
@@ -85,41 +95,26 @@ CSLayer *CSLayer::create(const Color4B& color, GLfloat width, GLfloat height)
 	return nullptr;
 }
 
-void CSLayer::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+void CSLayer::update(float dt)
 {
-	
-	if(_showAxis)
+	if(_showAxis && _drawAxis != nullptr)
 	{
-		// draw coordinate axis
-		_customCommand.init(_globalZOrder);
-		_customCommand.func = CC_CALLBACK_0(CSLayer::drawAxis, this, transform, flags);
-		renderer->addCommand(&_customCommand);
+		_drawAxis->clear();
+		glLineWidth(5.0);
+		_drawAxis->drawLine(Vec3(-getContentSize().width,0, 0), Vec3(getContentSize().width, 0, 0), Color4F(1,0,0,1) );
+		_drawAxis->drawLine(Vec3(0,-getContentSize().height, 0), Vec3(0,getContentSize().height, 0), Color4F(0,1,0,1) );
+		_drawAxis->drawLine(Vec3(0,0,-1000), Vec3(0,0,1000) , Color4F(0,0,1,1) );
 	}
-	cocos2d::CCLayerColor::draw(renderer, transform, flags);
 }
-void CSLayer::drawAxis(const Mat4 &transform, uint32_t flags)
+
+
+
+
+// add tile map with image
+void CSLayer::addCSTileMapWithImage(std::string filename)
 {
-	cocos2d::Director* director = cocos2d::Director::getInstance();
-	director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, transform);
-
-	// draw coordinate axis
-	glLineWidth( 5.0f );
-	cocos2d::DrawPrimitives::setDrawColor4B(255,0,0,255);
-	cocos2d::DrawPrimitives::drawLine3D( Vec3(-getContentSize().width,0, 0), Vec3(getContentSize().width, 0, 0) );
-
-	glLineWidth( 5.0f );
-	cocos2d::DrawPrimitives::setDrawColor4B(0,255,0,255);
-	cocos2d::DrawPrimitives::drawLine3D( Vec3(0,-getContentSize().height, 0), Vec3(0,getContentSize().height, 0) );
-
-	glLineWidth( 5.0f );
-	cocos2d::DrawPrimitives::setDrawColor4B(0,0,255,255);
-	cocos2d::DrawPrimitives::drawLine3D( Vec3(0,0,-1000), Vec3(0,0,1000) );
-
-	//end draw
-	director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-
+	auto tilemap = CSTileMap::create(filename);
+	addChild(tilemap, 1);
 }
-
 
 NS_CS_END

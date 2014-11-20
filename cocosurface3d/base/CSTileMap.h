@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include "cocos2d.h"
 #include "../platform/CSPlatformMacros.h"
+#include "CSUndoManager.h"
 
 USING_NS_CC;
 
@@ -53,7 +54,7 @@ All features from Node are valid, plus the following new features:
 - It can receive iPhone Touches
 - It can receive Accelerometer input
 */
-class CS_DLL CSTileMap : public cocos2d::CCLayer
+class CS_DLL CSTileMap : public cocos2d::CCLayer, public CSUndoItem
 {
 public:    
     /** creates a fullscreen black layer */
@@ -71,9 +72,13 @@ public:
 	bool	initWithImage(std::string filename);
 	/** init with image */
 	bool	initWithImage(std::string filename, GLfloat width, GLfloat height);
+	/** undo add map */
+	void	undoAddWithImage();
 protected:
 	CC_SYNTHESIZE(SpriteBatchNode *, _tileBatchNode, TileBatchNode);
 
+	virtual void Undo(CSUndoInfo *info);
+	virtual void Redo(CSUndoInfo *info);
 };
 
 // end of layer group

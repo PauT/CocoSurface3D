@@ -163,6 +163,9 @@ THE SOFTWARE.
 #include "renderer/CCPrimitive.h"
 #include "renderer/CCPrimitiveCommand.h"
 #include "renderer/CCTrianglesCommand.h"
+#ifdef _COCOSURFACE3D
+#include "renderer/CCDepthBatchCommand.h"
+#endif
 
 // physics
 #include "physics/CCPhysicsBody.h"

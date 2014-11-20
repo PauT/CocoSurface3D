@@ -20,16 +20,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __COCOSURFACE3D__H__
-#define __COCOSURFACE3D__H__
-// 0x00 HI ME LO
-// 00   00 00 01
-#define COCOSURFACE3D_VERSION 0x00000001
-//#include "cocos2d.h"
-#include "platform/CSPlatformMacros.h"
+#include <stdarg.h>
+#include "CSSpriteBatchNode.h"
 
-#include "base/CSScene.h"
-#include "platform/CSDevice.h"
+USING_NS_CC;
 
+NS_CS_BEGIN
+CSSpriteBatchNode* CSSpriteBatchNode::create(const std::string& fileImage, ssize_t capacity/* = DEFAULT_CAPACITY*/)
+{
+	CSSpriteBatchNode *batchNode = new (std::nothrow) CSSpriteBatchNode();
+	batchNode->initWithFile(fileImage, capacity);
+	batchNode->autorelease();
 
-#endif
+	return batchNode;
+}
+
+void CSSpriteBatchNode::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+{
+	// Overrides
+
+	if( _textureAtlas->getTotalQuads() == 0 )
+	{
+		return;
+	}
+
+	for(const auto &child: _children)
+		child->updateTransform();
+
+	_customCommand.init(
+		_globalZOrder,
+		getGLProgram(),
+		_blendFunc,
+		_textureAtlas,
+		transform);
+	renderer->addCommand(&_customCommand);
+}
+
+/** rewrite onDraw*/
+void CSSpriteBatchNode::onDraw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+{
+}
+NS_CS_END

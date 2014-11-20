@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include "cocos2d.h"
 #include "../platform/CSPlatformMacros.h"
+#include "DrawNode3D.h"
 
 USING_NS_CC;
 
@@ -70,12 +71,19 @@ public:
 
 	// show axis
 	CC_SYNTHESIZE(bool, _showAxis, ShowAxis);
-	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags);
+
+	// add tile map with image
+	void addCSTileMapWithImage(std::string filename);
+
+	
+	
 protected:
 	// draw coordinate axis
-	virtual void drawAxis(const Mat4 &transform, uint32_t flags);
+	DrawNode3D *_drawAxis;
+
 	CustomCommand _customCommand;
 
+	void update(float dt);
 };
 
 // end of layer group

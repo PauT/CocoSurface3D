@@ -95,6 +95,8 @@ protected:
 	/** init camera */
 	void resetCamera();
 
+	CC_SYNTHESIZE(Ref*, _curSelect, CurSelect);
+
 	void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, Event* event);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	/** windows event */

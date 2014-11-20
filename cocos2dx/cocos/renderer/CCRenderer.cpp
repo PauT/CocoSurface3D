@@ -31,6 +31,7 @@
 #include "renderer/CCBatchCommand.h"
 #include "renderer/CCCustomCommand.h"
 #include "renderer/CCGroupCommand.h"
+#include "renderer/CCDepthBatchCommand.h"
 #include "renderer/CCPrimitiveCommand.h"
 #include "renderer/CCGLProgramCache.h"
 #include "renderer/ccGLStateCache.h"
@@ -424,6 +425,15 @@ void Renderer::visitRenderQueue(const RenderQueue& queue)
             auto cmd = static_cast<PrimitiveCommand*>(command);
             cmd->execute();
         }
+#ifdef _COCOSURFACE3D
+		else if (RenderCommand::Type::DEPTH_BATCH_COMMAND == commandType)
+		{
+			flush();
+			auto cmd = static_cast<DepthBatchCommand*>(command);
+			cmd->execute();
+			
+		}
+#endif
         else if (RenderCommand::Type::MESH_COMMAND == commandType)
         {
             flush2D();
@@ -499,6 +509,13 @@ void Renderer::visitTransparentRenderQueue(const TransparentRenderQueue& queue)
             auto cmd = static_cast<MeshCommand*>(command);
             cmd->execute();
         }
+#ifdef _COCOSURFACE3D
+		else if (RenderCommand::Type::DEPTH_BATCH_COMMAND == commandType)
+		{
+			auto cmd = static_cast<DepthBatchCommand*>(command);
+			cmd->execute();
+		}
+#endif
         else
         {
             CCLOGERROR("Unknown commands in renderQueue");

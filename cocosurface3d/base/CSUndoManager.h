@@ -7,41 +7,54 @@ USING_NS_CC;
 
 NS_CS_BEGIN
 
+
+
 enum UndoType {
 	actionType_none = 0,
 	actionType_addMapImage,
 };
 
-class CSUndoInfo
-{
-public:
-	CSUndoInfo(){}
-	~CSUndoInfo(){}
-
-	//Action类型
+class CSUndoItem;
+struct CSUndoInfo {
+	//actor type
 	UndoType				actionType;
-	//多个object所需
-	std::vector<CCObject *> objectList;
-	//
-	int						objectId;
-
-
-	virtual void  dosomething(){}
+	//object info
+	std::vector<Ref *>		objectList;
+	/** undo list */
+	CSUndoItem				*_target;
 };
 
-class CSUndoManager : public CCNode
+class CSUndoItem
+{
+public:
+	virtual void Undo(CSUndoInfo *info) = 0;
+	virtual void Redo(CSUndoInfo *info) = 0;
+};
+
+class CS_DLL CSUndoManager : public Node
 {
 public:
 	CSUndoManager();
 	~CSUndoManager();
 
-	
+	/** undo */
+	void Undo();
+	/** redo */
+	void Redo();
+	/** execute */
+	void Execute(CSUndoInfo *info);
 
+	/** singleton */
+	static CSUndoManager *getInstance();
 protected:
+	/** undo redo list */
 	std::vector<CSUndoInfo *> m_undoList;
 	std::vector<CSUndoInfo *> m_redoList;
+	void clearUndoList();
+	void clearRedoList();
 
-	static CSUndoManager *sharedIAction();
+
+	
 };
 
 NS_CS_END

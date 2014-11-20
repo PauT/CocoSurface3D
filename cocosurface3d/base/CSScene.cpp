@@ -27,6 +27,7 @@ THE SOFTWARE.
 
 #include "CSScene.h"
 #include "CSLayer.h"
+#include "platform/CSDevice.h"
 USING_NS_CC;
 NS_CS_BEGIN
 
@@ -85,51 +86,31 @@ bool CSScene::initWithSize(const Size& size)
 	Scene::initWithSize(size);
 	
 	/** test part need remove*/
-	auto layer3D = CSLayer::create(cocos2d::ccc4(0,0,0,0), size.width, size.height);
+	auto layer3D = CSLayer::create(cocos2d::Color4B(0,0,0,0), size.width, size.height);
 	_layer3D = layer3D;
 	addChild(_layer3D, 0);
 	_layer3D->setPosition3D(Vec3(50,0,-20));
 	resetCamera();
-
-	auto layer3DChild1 = CSLayer::create(cocos2d::ccc4(255,0,0,0));
-	_layer3D->addChild(layer3DChild1, 0);
-	layer3DChild1->setPosition3D(Vec3(0,0,0));
-
-	auto sprite = Sprite::create("Images/background3.jpg");
-	sprite->setAnchorPoint(cocos2d::Vec2(0,0));
-	layer3DChild1->addChild(sprite);
-
-	auto sprite3D = Sprite3D::create("Sprite3DTest/tortoise.c3b", "Sprite3DTest/tortoise.png");
-	sprite3D->setPosition3D(cocos2d::Vec3(0,0,0));
-	sprite3D->setAnchorPoint(cocos2d::Vec2(0,0));
-	layer3DChild1->addChild(sprite3D);
+	_curSelect = _layer3D;
 
 
-	
 
-	auto animation = Animation3D::create("Sprite3DTest/tortoise.c3b");
-	if (animation)
-	{
-		auto animate = Animate3D::create(animation, 0.f, 1.933f);
-		auto swim = RepeatForever::create(animate);
-		sprite3D->runAction(swim);
-		swim->retain();
-	}
-	
-
+	// added keyboard listener
 	auto keyListener = cocos2d::EventListenerKeyboard::create();
 	keyListener->onKeyPressed = CC_CALLBACK_2(CSScene::onKeyDown, this);
 	keyListener->onKeyReleased = CC_CALLBACK_2(CSScene::onKeyUp, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
 
+	// added touch listener
 	auto touchListener = cocos2d::EventListenerTouchAllAtOnce::create();
 	touchListener->onTouchesMoved = CC_CALLBACK_2(CSScene::onTouchesMoved, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
+	// added mouse listener
 	auto mouseListener = cocos2d::EventListenerMouse::create();
 	mouseListener->onMouseScroll = CC_CALLBACK_1(CSScene::onMouseScroll, this);
-
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+	
 	return true;
 }
 
@@ -251,6 +232,13 @@ void CSScene::onKeyUp(EventKeyboard::KeyCode keyCode, Event* event)
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		_cameraRotateMode = CAMERA_ROTATE_NONE;
+		break;
+	case EventKeyboard::KeyCode::KEY_1:
+		//add tilemap
+		std::string fileName = CSDevice::openFileDialog();
+		//auto layercolor = CCLayerColor::create(Color4B(0,0,255,255));
+		//_layer3D->addChild(layercolor);
+		_layer3D->addCSTileMapWithImage(fileName);
 		break;
 	}
 }

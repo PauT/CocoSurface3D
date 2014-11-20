@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 #include <stdarg.h>
 #include "CSTileMap.h"
+#include "CSUndoManager.h"
+#include "CSSpriteBatchNode.h"
 
 NS_CS_BEGIN
 
@@ -91,9 +93,33 @@ bool CSTileMap::initWithImage(std::string filename)
 }
 bool CSTileMap::initWithImage(std::string filename, GLfloat width, GLfloat height)
 {
-	_tileBatchNode = SpriteBatchNode::create(filename, 50);
-	addChild(_tileBatchNode);
+	auto tileBatchNode = CSSpriteBatchNode::create(filename);
+	auto sprite = Sprite::create(filename);
+	tileBatchNode->addChild(sprite);
+	addChild(tileBatchNode);
+
+
+	/*CSUndoInfo *info = new CSUndoInfo();
+	info->actionType = actionType_addMapImage;
+	info->objectList.push_back(this);
+	CSUndoManager::getInstance()->Execute(info);*/
+
 	return true;
+}
+
+
+void CSTileMap::undoAddWithImage()
+{
+	removeFromParent();
+}
+
+void CSTileMap::Undo(CSUndoInfo *info)
+{
+
+}
+void CSTileMap::Redo(CSUndoInfo *info)
+{
+
 }
 
 NS_CS_END

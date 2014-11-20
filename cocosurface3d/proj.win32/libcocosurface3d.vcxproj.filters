@@ -20,6 +20,15 @@
     <ClInclude Include="..\base\CSUndoManager.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="..\platform\CSDevice.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\DrawNode3D.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\CSSpriteBatchNode.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cocosurface3d.cpp" />
@@ -33,6 +42,15 @@
       <Filter>base</Filter>
     </ClCompile>
     <ClCompile Include="..\base\CSUndoManager.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\win32\CSDevice-win32.cpp">
+      <Filter>platform\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\DrawNode3D.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\CSSpriteBatchNode.cpp">
       <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>

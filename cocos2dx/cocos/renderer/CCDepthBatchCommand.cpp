@@ -23,67 +23,54 @@
  ****************************************************************************/
 
 
-#ifndef __CCRENDERCOMMAND_H_
-#define __CCRENDERCOMMAND_H_
-
-#include <stdint.h>
-
-#include "platform/CCPlatformMacros.h"
-#include "base/ccTypes.h"
+#include "renderer/CCDepthBatchCommand.h"
+#include "renderer/ccGLStateCache.h"
+#include "renderer/CCTextureAtlas.h"
+#include "renderer/CCTexture2D.h"
+#include "renderer/CCGLProgram.h"
 
 NS_CC_BEGIN
 
-/** Base class of the `RenderCommand` hierarchy.
-*
- The `Renderer` knows how to render `RenderCommands` objects.
- */
-class CC_DLL RenderCommand
+DepthBatchCommand::DepthBatchCommand()
+: _textureID(0)
+, _blendType(BlendFunc::DISABLE)
+, _textureAtlas(nullptr)
 {
-public:
+    _type = RenderCommand::Type::DEPTH_BATCH_COMMAND;
+    _shader = nullptr;
+}
 
-    enum class Type
-    {
-        UNKNOWN_COMMAND,
-        QUAD_COMMAND,
-        CUSTOM_COMMAND,
-        BATCH_COMMAND,
-        GROUP_COMMAND,
-        MESH_COMMAND,
-        PRIMITIVE_COMMAND,
-        TRIANGLES_COMMAND,
-#ifdef _COCOSURFACE3D
-		DEPTH_BATCH_COMMAND
-#endif
-    };
-
-    /** Get Render Command Id */
-    inline float getGlobalOrder() const { return _globalOrder; }
-
-    /** Returns the Command type */
-    inline Type getType() const { return _type; }
+void DepthBatchCommand::init(float globalOrder, GLProgram* shader, BlendFunc blendType, TextureAtlas *textureAtlas, const Mat4& modelViewTransform)
+{
+    CCASSERT(shader, "shader cannot be nill");
+    CCASSERT(textureAtlas, "textureAtlas cannot be nill");
     
-    /** Retruns whether is transparent */
-    inline bool isTransparent() const { return _isTransparent; }
-    
-    /** set transparent flag */
-    inline void setTransparent(bool isTransparent) { _isTransparent = isTransparent; }
+    _globalOrder = globalOrder;
+    _textureID = textureAtlas->getTexture()->getName();
+    _blendType = blendType;
+    _shader = shader;
 
-protected:
-    RenderCommand();
-    virtual ~RenderCommand();
+    _textureAtlas = textureAtlas;
 
-    void printID();
+    _mv = modelViewTransform;
+}
 
-    // Type used in order to avoid dynamic cast, faster
-    Type _type;
+DepthBatchCommand::~DepthBatchCommand()
+{
+}
 
-    // commands are sort by depth
-    float _globalOrder;
-    
-    // transparent flag
-    bool  _isTransparent;
-};
+void DepthBatchCommand::execute()
+{
+    // Set material
+    _shader->use();
+    _shader->setUniformsForBuiltins(_mv);
+    GL::bindTexture2D(_textureID);
+    GL::blendFunc(_blendType.src, _blendType.dst);
+
+    // Draw
+	glEnable(GL_DEPTH_TEST);
+    _textureAtlas->drawQuads();
+	glDisable(GL_DEPTH_TEST);
+}
 
 NS_CC_END
-
-#endif //__CCRENDERCOMMAND_H_
