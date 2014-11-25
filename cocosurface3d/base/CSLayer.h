@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "cocos2d.h"
 #include "../platform/CSPlatformMacros.h"
 #include "DrawNode3D.h"
+#include "CSUndoManager.h"
 
 USING_NS_CC;
 
@@ -54,7 +55,7 @@ All features from Node are valid, plus the following new features:
 - It can receive iPhone Touches
 - It can receive Accelerometer input
 */
-class CS_DLL CSLayer : public cocos2d::LayerColor
+class CS_DLL CSLayer : public cocos2d::LayerColor, public CSUndoItem
 {
 public:    
     /** creates a fullscreen black layer */
@@ -84,6 +85,10 @@ protected:
 	CustomCommand _customCommand;
 
 	void update(float dt);
+
+	virtual void Undo(CSUndoInfo *info);
+	virtual void Redo(CSUndoInfo *info);
+	virtual void clearRedoItem(CSUndoInfo *info);
 };
 
 // end of layer group

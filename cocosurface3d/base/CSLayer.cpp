@@ -115,6 +115,61 @@ void CSLayer::addCSTileMapWithImage(std::string filename)
 {
 	auto tilemap = CSTileMap::create(filename);
 	addChild(tilemap, 1);
+
+	CSUndoInfo *info = new CSUndoInfo();
+	info->actionType = actionType_addMapImage;
+	info->_target = this;
+	info->objectList.push_back(tilemap);
+	CSUndoManager::getInstance()->Execute(info);
+}
+
+
+void CSLayer::Undo(CSUndoInfo *info)
+{
+	switch (info->actionType)
+	{
+	case actionType_addMapImage:
+		{
+			auto tilemap = dynamic_cast<CSTileMap *>(*info->objectList.begin());
+			tilemap->retain();
+			if(tilemap)
+				tilemap->removeFromParent();
+		}
+		break;
+	default:
+		break;
+	}
+}
+void CSLayer::Redo(CSUndoInfo *info)
+{
+	switch (info->actionType)
+	{
+	case actionType_addMapImage:
+		{
+			auto tilemap = dynamic_cast<CSTileMap *>(*info->objectList.begin());
+			if(tilemap)
+				addChild(tilemap);
+		}
+		break;
+	default:
+		break;
+	}
+}
+void CSLayer::clearRedoItem(CSUndoInfo *info)
+{
+	switch (info->actionType)
+	{
+	case actionType_addMapImage:
+		{
+			//release object;
+			auto tilemap = dynamic_cast<CSTileMap *>(*info->objectList.begin());
+			if(tilemap)
+				tilemap->release();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 NS_CS_END

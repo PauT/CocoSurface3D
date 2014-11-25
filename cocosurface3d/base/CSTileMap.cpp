@@ -99,13 +99,6 @@ bool CSTileMap::initWithImage(std::string filename, GLfloat width, GLfloat heigh
 	_tileBatchNode->addChild(sprite, tags, tags);
 	addChild(_tileBatchNode);
 
-
-	CSUndoInfo *info = new CSUndoInfo();
-	info->actionType = actionType_addMapImage;
-	info->_target = this;
-	info->objectList.push_back(sprite);
-	CSUndoManager::getInstance()->Execute(info);
-
 	return true;
 }
 
@@ -115,14 +108,6 @@ void CSTileMap::Undo(CSUndoInfo *info)
 {
 	switch (info->actionType)
 	{
-	case actionType_addMapImage:
-		{
-			auto sprite = dynamic_cast<Sprite *>(*info->objectList.begin());
-			sprite->retain();
-			if(sprite)
-				sprite->removeFromParent();
-		}
-		break;
 	default:
 		break;
 	}
@@ -131,13 +116,6 @@ void CSTileMap::Redo(CSUndoInfo *info)
 {
 	switch (info->actionType)
 	{
-	case actionType_addMapImage:
-		{
-			auto sprite = dynamic_cast<Sprite *>(*info->objectList.begin());
-			if(sprite)
-				_tileBatchNode->addChild(sprite);
-		}
-		break;
 	default:
 		break;
 	}
@@ -146,14 +124,6 @@ void CSTileMap::clearRedoItem(CSUndoInfo *info)
 {
 	switch (info->actionType)
 	{
-	case actionType_addMapImage:
-		{
-			//release object;
-			auto sprite = dynamic_cast<Sprite *>(*info->objectList.begin());
-			if(sprite)
-				sprite->release();
-		}
-		break;
 	default:
 		break;
 	}

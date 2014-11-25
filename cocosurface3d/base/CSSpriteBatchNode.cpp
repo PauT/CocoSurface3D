@@ -59,5 +59,6 @@ void CSSpriteBatchNode::draw(Renderer *renderer, const Mat4 &transform, uint32_t
 /** rewrite onDraw*/
 void CSSpriteBatchNode::onDraw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 {
+
 }
 NS_CS_END
